@@ -1,0 +1,11 @@
+[
+	{
+		"firstName": "FirstName",
+		"surName": "SurName",
+		"patronymic": "",
+		"pasportNumber": "123456",
+		"birthDate": "2001-10-04T21:01:05.1093037+04:00",
+		"gender": 1,
+		"id": 1
+	}
+]
