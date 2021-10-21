@@ -113,15 +113,15 @@ namespace Task2.Cmd
                                             Console.Clear();
                                             Console.WriteLine("Enter id hotel room");
                                             if (int.TryParse(Console.ReadLine(), out int idHotelRoom))
-                                                {
-                                                    var hotelRoom = hotelRoomController.GetByIdHotelRoom(idHotelRoom);
-                                                    if (hotelRoom != null)
-                                                        Console.WriteLine($"Id hotel room - {hotelRoom.Id}\nNumber hotel room - {hotelRoom.Number}\nCategory hotel room - {hotelRoom.Category}\nPrice - {hotelRoom.Price}");
-                                                    else
-                                                        Console.WriteLine("With this ID the hotel room was not found");
-                                                }
+                                            {
+                                                var hotelRoom = hotelRoomController.GetByIdHotelRoom(idHotelRoom);
+                                                if (hotelRoom != null)
+                                                    Console.WriteLine($"Id hotel room - {hotelRoom.Id}\nNumber hotel room - {hotelRoom.Number}\nCategory hotel room - {hotelRoom.Category}\nPrice - {hotelRoom.Price}");
                                                 else
-                                                    Console.WriteLine("Invalid input");
+                                                    Console.WriteLine("With this ID the hotel room was not found");
+                                            }
+                                            else
+                                                Console.WriteLine("Invalid input");
                                             Console.WriteLine("Press any key");
                                             Console.ReadKey();
                                             break;
