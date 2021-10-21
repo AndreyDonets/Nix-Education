@@ -1,4 +1,4 @@
-﻿namespace Task4
+﻿namespace Task4.Models
 {
     public class Philosopher
     {
