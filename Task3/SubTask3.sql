@@ -1,4 +1,4 @@
-SELECT CompanyName
+SELECT DISTINCT CompanyName
 FROM Orders
 INNER JOIN(
 	SELECT CompanyName, CustomerID
