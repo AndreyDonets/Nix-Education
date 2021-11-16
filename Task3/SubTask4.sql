@@ -3,7 +3,7 @@ SELECT TOP 1
 FROM(
 	SELECT 
 		EmployeeID, 
-		COUNT(CustomerID) AS CustomersCount
+		COUNT(DISTINCT CustomerID) AS CustomersCount
 	FROM Orders
 	GROUP BY EmployeeID
 	) AS Total

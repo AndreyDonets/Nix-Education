@@ -1,13 +1,5 @@
-SELECT 
-	CategoryName, 
-	MAX(UnitPrice) as Price
+SELECT TOP 1
+	ProductName
 FROM dbo.Products
-INNER JOIN (
-	SELECT 
-		CategoryId, CategoryName
-	FROM 
-		dbo.Categories
-	) AS CatName
-ON dbo.Products.CategoryID = CatName.CategoryID
 WHERE dbo.Products.CategoryID = 1
-GROUP BY CategoryName
+ORDER BY UnitPrice DESC
