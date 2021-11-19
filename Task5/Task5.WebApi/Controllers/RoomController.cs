@@ -97,8 +97,8 @@ namespace Task5.WebApi.Controllers
             var categories = categoryService.GetAll().FirstOrDefault(x => x.Id == room.CategoryId).Name;
 
             var price = categoryDateService.GetAll()
-                .Where(x => x.CategoryId == room.CategoryId && x.StartDate.Date <= DateTime.Now.Date && (!x.EndDate.HasValue || x.EndDate.Value.Date < request.StartDate.Date))
-                .OrderBy(x => x.StartDate).FirstOrDefault().Price;
+                .Where(x => x.CategoryId == room.CategoryId && x.StartDate.Date <= DateTime.Now.Date)
+                .OrderBy(x => x.StartDate).LastOrDefault().Price;
 
             var IsOccupied = stayService.GetAll().Where(x => x.RoomId == room.Id)
                 .Any(x => (request.StartDate >= x.StartDate && request.StartDate < x.EndDate) || (request.EndDate >= x.StartDate && request.EndDate < x.EndDate));

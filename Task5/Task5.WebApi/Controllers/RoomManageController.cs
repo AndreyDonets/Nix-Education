@@ -54,7 +54,7 @@ namespace Task5.WebApi.Controllers
                 return BadRequest();
 
             var category = categoryService.Get(room.CategoryId);
-            var price = categoryDateService.GetAll().OrderBy(x => x.StartDate).FirstOrDefault(x => x.CategoryId == category.Id && x.StartDate.Date <= DateTime.Now.Date).Price;
+            var price = categoryDateService.GetAll().OrderBy(x => x.StartDate).LastOrDefault(x => x.CategoryId == category.Id && x.StartDate.Date <= DateTime.Now.Date).Price;
 
             return new RoomViewModel
             {
@@ -70,7 +70,7 @@ namespace Task5.WebApi.Controllers
             if (roomService.GetAll().Any(x => x.Number == request.Number))
                 ModelState.AddModelError("Number", $"Number {request.Number} already exists");
 
-            var categories = await categoryService.GetAllAsync();
+            var categories = categoryService.GetAll();
             if (!categories.Any(x => x.Name == request.Category))
                 ModelState.AddModelError("Category", $"Category {request.Category} does not exist");
 
@@ -81,7 +81,9 @@ namespace Task5.WebApi.Controllers
 
             var room = new RoomDTO { Number = request.Number, CategoryId = categoryId };
 
-            var price = categoryDateService.GetAll().OrderBy(x => x.StartDate).FirstOrDefault(x => x.CategoryId == categoryId && x.StartDate.Date <= DateTime.Now.Date).Price;
+            await roomService.CreateAsync(room);
+
+            var price = categoryDateService.GetAll().OrderBy(x => x.StartDate).LastOrDefault(x => x.CategoryId == categoryId && x.StartDate.Date <= DateTime.Now.Date).Price;
 
             var result = new RoomViewModel()
             {
@@ -90,16 +92,14 @@ namespace Task5.WebApi.Controllers
                 Price = price
             };
 
-            await roomService.CreateAsync(room);
-
-            return Ok(result);
+            return result;
         }
 
         [HttpPut]
         public async Task<ActionResult<RoomViewModel>> Edit(ChangeRoomViewModel request)
         {
             var room = roomService.GetAll().FirstOrDefault(x => x.Number == request.Number);
-            var categories = await categoryService.GetAllAsync();
+            var categories = categoryService.GetAll();
 
             if (room == null || string.IsNullOrWhiteSpace(request.NewCategory) || !categories.Any(x => x.Name == request.NewCategory))
                 return BadRequest();
@@ -121,7 +121,7 @@ namespace Task5.WebApi.Controllers
 
             await roomService.UpdateAsync(room);
 
-            var price = categoryDateService.GetAll().OrderBy(x => x.StartDate).FirstOrDefault(x => x.CategoryId == categoryId && x.StartDate.Date <= DateTime.Now.Date).Price;
+            var price = categoryDateService.GetAll().OrderBy(x => x.StartDate).LastOrDefault(x => x.CategoryId == categoryId && x.StartDate.Date <= DateTime.Now.Date).Price;
 
 
             var result = new RoomViewModel()
@@ -131,7 +131,7 @@ namespace Task5.WebApi.Controllers
                 Price = price
             };
 
-            return Ok(result);
+            return result;
         }
 
         [HttpDelete]
