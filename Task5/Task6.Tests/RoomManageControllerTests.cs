@@ -79,9 +79,11 @@ namespace Task6.Tests
         {
             var room = roomList.FirstOrDefault(x => x.Number == number);
 
-            moqRoomService.Setup(rooms => rooms.GetAll()).Returns(roomList);
+            moqRoomService.Setup(rooms => rooms.GetRoomByNumber(number)).Returns(roomList.FirstOrDefault(x => x.Number == number));
             moqCategoryService.Setup(categories => categories.Get(room.CategoryId)).Returns(categoryList.Find(x => x.Id == room.CategoryId));
-            moqCategoryDateService.Setup(categoryDates => categoryDates.GetAll()).Returns(categoryDateList);
+            moqCategoryDateService.Setup(categoryDates => categoryDates.GetCategoryDatesByCategoryId(room.CategoryId))
+                .Returns(categoryDateList.Where(x => x.CategoryId == room.CategoryId));
+
             var controller = new RoomManageController(moqRoomService.Object, moqCategoryService.Object, moqCategoryDateService.Object);
 
             var result = controller.Get(number);
@@ -97,56 +99,65 @@ namespace Task6.Tests
         [TestCase(8, "Vip", 12000)]
         [TestCase(9, "Base", 4500)]
         [TestCase(10, "Base", 4500)]
-        public async Task Add(int number, string category, decimal expectedPrice)
+        public async Task Add(int number, string categoryName, decimal expectedPrice)
         {
-            moqRoomService.Setup(rooms => rooms.GetAll()).Returns(roomList);
-            moqCategoryService.Setup(categories => categories.GetAll()).Returns(categoryList);
-            moqCategoryDateService.Setup(categoryDate => categoryDate.GetAll()).Returns(categoryDateList);
+            var category = categoryList.FirstOrDefault(x => x.Name == categoryName);
+
+            moqRoomService.Setup(rooms => rooms.GetRoomByNumber(number)).Returns(roomList.FirstOrDefault(x => x.Number == number));
+            moqCategoryService.Setup(categories => categories.GetCategoryByName(categoryName)).Returns(categoryList.FirstOrDefault(x => x.Name == categoryName));
+            moqCategoryDateService.Setup(categoryDate => categoryDate.GetCategoryDatesByCategoryId(category.Id))
+                .Returns(categoryDateList.Where(x => x.CategoryId == category.Id));
+
             var controller = new RoomManageController(moqRoomService.Object, moqCategoryService.Object, moqCategoryDateService.Object);
 
             var response = new RoomViewModel
             {
-                Category = category,
+                Category = categoryName,
                 Number = number
             };
 
             var result = await controller.Add(response);
 
             Assert.AreEqual(number, result.Value.Number);
-            Assert.AreEqual(category, result.Value.Category);
+            Assert.AreEqual(categoryName, result.Value.Category);
             Assert.AreEqual(expectedPrice, result.Value.Price);
         }
 
         [Test]
         [TestCase(2, 6, "Vip", 6, 12000)]
         [TestCase(4, 0, "Vip", 4, 12000)]
-        public async Task Edit(int number, int newNumber, string category, int expectedNumber, decimal expectedPrice)
+        public async Task Edit(int number, int newNumber, string categoryName, int expectedNumber, decimal expectedPrice)
         {
-            moqRoomService.Setup(rooms => rooms.GetAll()).Returns(roomList);
-            moqCategoryService.Setup(categories => categories.GetAll()).Returns(categoryList);
-            moqCategoryDateService.Setup(categoryDate => categoryDate.GetAll()).Returns(categoryDateList);
+            var room = roomList.FirstOrDefault(x => x.Number == number);
+            var category = categoryList.FirstOrDefault(x => x.Name == categoryName);
+
+            moqRoomService.Setup(rooms => rooms.GetRoomByNumber(number)).Returns(roomList.FirstOrDefault(x => x.Number == number));
+            moqRoomService.Setup(rooms => rooms.GetRoomByNumber(newNumber)).Returns(roomList.FirstOrDefault(x => x.Number == newNumber));
+            moqCategoryService.Setup(categories => categories.GetCategoryByName(categoryName)).Returns(categoryList.FirstOrDefault(x => x.Name == categoryName));
+            moqCategoryService.Setup(categories => categories.Get(room.Id)).Returns(categoryList.FirstOrDefault(x => x.Id == room.CategoryId));
+            moqCategoryDateService.Setup(categoryDate => categoryDate.GetCategoryDatesByCategoryId(category.Id))
+                .Returns(categoryDateList.Where(x => x.CategoryId == category.Id));
+
             var controller = new RoomManageController(moqRoomService.Object, moqCategoryService.Object, moqCategoryDateService.Object);
 
-            var roomBase = roomList.FirstOrDefault(x => x.Number == number);
-
-            var room = new RoomDTO
+            var roomExpected = new RoomDTO
             {
-                Id = roomBase.Id,
-                CategoryId = categoryList.FirstOrDefault(x => x.Name == category).Id,
+                Id = room.Id,
+                CategoryId = categoryList.FirstOrDefault(x => x.Name == categoryName).Id,
                 Number = expectedNumber
             };
 
             var response = new ChangeRoomViewModel
             {
                 Number = number,
-                NewCategory = category,
+                NewCategory = categoryName,
                 NewNumber = newNumber
             };
 
             var result = await controller.Edit(response);
 
             Assert.AreEqual(expectedNumber, result.Value.Number);
-            Assert.AreEqual(category, result.Value.Category);
+            Assert.AreEqual(categoryName, result.Value.Category);
             Assert.AreEqual(expectedPrice, result.Value.Price);
             moqRoomService.Verify(rooms => rooms.UpdateAsync(room));
         }
@@ -156,7 +167,7 @@ namespace Task6.Tests
         [TestCase(5)]
         public async Task Delete(int number)
         {
-            moqRoomService.Setup(rooms => rooms.GetAll()).Returns(roomList);
+            moqRoomService.Setup(rooms => rooms.GetRoomByNumber(number)).Returns(roomList.FirstOrDefault(x => x.Number == number));
 
             var controller = new RoomManageController(moqRoomService.Object, moqCategoryService.Object, moqCategoryDateService.Object);
 

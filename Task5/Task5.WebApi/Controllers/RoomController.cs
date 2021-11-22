@@ -43,7 +43,7 @@ namespace Task5.WebApi.Controllers
 
             var categories = categoryService.GetAll().ToList();
 
-            var categoryDates = categoryDateService.GetAll().Where(x => !x.EndDate.HasValue || x.EndDate > DateTime.Now).OrderBy(x => x.StartDate).ToList();
+            var categoryDates = categoryDateService.GetAll().Where(x => !x.EndDate.HasValue || x.EndDate > DateTime.Now).OrderBy(x => x.StartDate);
 
             for (int i = 0; i < rooms.Count(); i++)
             {
@@ -89,24 +89,23 @@ namespace Task5.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<RoomViewModel>> Book(BookRoomViewModel request)
         {
-            var room = roomService.GetAll().FirstOrDefault(x => x.Number == request.Number);
+            var room = roomService.GetRoomByNumber(request.Number);
 
             if (room == null)
                 return BadRequest();
 
             var categories = categoryService.GetAll().FirstOrDefault(x => x.Id == room.CategoryId).Name;
 
-            var price = categoryDateService.GetAll()
-                .Where(x => x.CategoryId == room.CategoryId && x.StartDate.Date <= DateTime.Now.Date)
-                .OrderBy(x => x.StartDate).LastOrDefault().Price;
+            var price = categoryDateService.GetCategoryDatesByCategoryId(room.CategoryId)
+                .Where(x => x.StartDate.Date <= DateTime.Now.Date).OrderBy(x => x.StartDate).LastOrDefault().Price;
 
-            var IsOccupied = stayService.GetAll().Where(x => x.RoomId == room.Id)
+            var IsOccupied = stayService.GetStaysByRoomId(room.Id)
                 .Any(x => (request.StartDate >= x.StartDate && request.StartDate < x.EndDate) || (request.EndDate >= x.StartDate && request.EndDate < x.EndDate));
 
             if (IsOccupied)
                 return BadRequest();
 
-            var guest = guestService.GetAll().FirstOrDefault(x => x.Passport == request.Passport);
+            var guest = guestService.GetGuestByPassport(request.Passport);
             if (guest == null)
             {
                 guest = new GuestDTO

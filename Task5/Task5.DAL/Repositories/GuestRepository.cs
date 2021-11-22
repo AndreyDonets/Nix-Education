@@ -15,9 +15,13 @@ namespace Task5.DAL.Repositories
 
         public GuestRepository(DataContext db) => this.db = db;
 
-        public void Create(Guest item) => db.Guests.Add(item);
+        public void Create(Guest item)
+        {
+            if (db.Guests.Find(item.Id) == null)
+                db.Guests.Add(item);
+        }
         public Guest Get(Guid id) => db.Guests.Find(id);
-        public Guest GetByPassport(string passport) => db.Guests.FirstOrDefault(x => x.Passport == passport);
+        public Guest GetByPassport(string passport) => db.Guests.AsNoTracking().FirstOrDefault(x => x.Passport == passport);
         public IEnumerable<Guest> GetAll() => db.Guests.AsNoTracking();
         public void Delete(Guid id)
         {
@@ -25,15 +29,22 @@ namespace Task5.DAL.Repositories
             if (item != null)
                 db.Guests.Remove(item);
         }
-        public void Update(Guest item) => db.Entry(item).State = EntityState.Modified;
+        public void Update(Guest item)
+        {
+            if (db.Guests.Find(item.Id) != null)
+                db.Entry(item).State = EntityState.Modified;
+        }
 
         public async Task CreateAsync(Guest item)
         {
-            db.Guests.Add(item);
-            await db.SaveChangesAsync();
+            if (db.Guests.Find(item.Id) == null)
+            {
+                db.Guests.Add(item);
+                await db.SaveChangesAsync();
+            }
         }
         public async Task<Guest> GetAsync(Guid id) => await db.Set<Guest>().FindAsync(id);
-        public async Task<Guest> GetByPassportAsync(string passport) => await db.Guests.FirstOrDefaultAsync(x => x.Passport == passport);
+        public async Task<Guest> GetByPassportAsync(string passport) => await db.Guests.AsNoTracking().FirstOrDefaultAsync(x => x.Passport == passport);
         public async Task<IEnumerable<Guest>> GetAllAsync() => await db.Set<Guest>().AsNoTracking().ToListAsync();
         public async Task DeleteAsync(Guid id)
         {
@@ -46,8 +57,11 @@ namespace Task5.DAL.Repositories
         }
         public async Task UpdateAsync(Guest item)
         {
-            db.Entry(item).State = EntityState.Modified;
-            await db.SaveChangesAsync();
+            if (item != null)
+            {
+                db.Entry(item).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+            }
         }
     }
 }

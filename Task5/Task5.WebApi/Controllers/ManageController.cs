@@ -86,11 +86,11 @@ namespace Task5.WebApi.Controllers
         [HttpPut]
         public async Task<ActionResult> CheckIn(int number)
         {
-            var room = roomService.GetAll().FirstOrDefault(x => x.Number == number);
+            var room = roomService.GetRoomByNumber(number);
             if (room == null)
                 return BadRequest();
 
-            var stay = stayService.GetAll().FirstOrDefault(x => x.RoomId == room.Id && !x.CheckedIn && x.StartDate.Date <= DateTime.Now.Date && x.EndDate.Date > DateTime.Now.Date);
+            var stay = stayService.GetStaysByRoomId(room.Id).FirstOrDefault(x => !x.CheckedIn && x.StartDate.Date <= DateTime.Now.Date && x.EndDate.Date > DateTime.Now.Date);
             if (stay == null)
                 return BadRequest();
 
@@ -104,11 +104,11 @@ namespace Task5.WebApi.Controllers
         [HttpPut]
         public async Task<ActionResult> CheckOut(int number)
         {
-            var room = roomService.GetAll().FirstOrDefault(x => x.Number == number);
+            var room = roomService.GetRoomByNumber(number);
             if (room == null)
                 return BadRequest();
 
-            var stay = stayService.GetAll().FirstOrDefault(x => x.RoomId == room.Id && x.CheckedIn && !x.CheckedOut && x.StartDate.Date <= DateTime.Now.Date && x.EndDate.Date >= DateTime.Now.Date);
+            var stay = stayService.GetStaysByRoomId(room.Id).FirstOrDefault(x => x.CheckedIn && !x.CheckedOut && x.StartDate.Date <= DateTime.Now.Date && x.EndDate.Date >= DateTime.Now.Date);
             if (stay == null)
                 return BadRequest();
 
@@ -166,7 +166,7 @@ namespace Task5.WebApi.Controllers
                     break;
                 }
             }
-            return Ok(result);
+            return result;
         }
     }
 }

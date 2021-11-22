@@ -64,7 +64,7 @@ namespace Task5.WebApi.Controllers
 
             var response = new UserViewModel { Email = user.Email, UserName = user.UserName, Role = await userManager.GetRolesAsync(user) };
 
-            return Ok(response);
+            return response;
         }
 
         [HttpPost]
@@ -83,7 +83,7 @@ namespace Task5.WebApi.Controllers
 
             var response = new UserViewModel { Email = user.Email, UserName = user.UserName, Role = await userManager.GetRolesAsync(user) };
 
-            return Ok(response);
+            return response;
         }
 
         [HttpPut]
@@ -102,7 +102,7 @@ namespace Task5.WebApi.Controllers
 
             var response = new UserViewModel { Email = user.Email, UserName = user.UserName, Role = await userManager.GetRolesAsync(user) };
 
-            return Ok(response);
+            return response;
         }
 
         [HttpDelete]

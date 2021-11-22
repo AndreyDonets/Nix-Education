@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Task5.BLL.DTO;
 using Task5.BLL.Interfaces;
@@ -20,17 +21,25 @@ namespace Task5.BLL.Services
 
         public IEnumerable<CategoryDTO> GetAll() => GetMapperToCategoryDTO().Map<IEnumerable<Category>, List<CategoryDTO>>(db.CategoryRepository.GetAll());
         public CategoryDTO Get(Guid id) => GetMapperToCategoryDTO().Map<Category, CategoryDTO>(db.CategoryRepository.Get(id));
+        public CategoryDTO GetCategoryByName(string name)
+        {
+            var categories = db.CategoryRepository.GetAll();
+            return GetMapperToCategoryDTO().Map<Category, CategoryDTO>(categories.FirstOrDefault(x => x.Name == name));
+        }
         public void Create(CategoryDTO item) => db.CategoryRepository.Create(GetMapperToCategory().Map<CategoryDTO, Category>(item));
         public void Update(CategoryDTO item) => db.CategoryRepository.Update(GetMapperToCategory().Map<CategoryDTO, Category>(item));
         public void Delete(Guid id) => db.CategoryRepository.Delete(id);
         public void Save() => db.Save();
-
         public async Task<IEnumerable<CategoryDTO>> GetAllAsync() => GetMapperToCategoryDTO().Map<IEnumerable<Category>, List<CategoryDTO>>(await db.CategoryRepository.GetAllAsync());
         public async Task<CategoryDTO> GetAsync(Guid id) => GetMapperToCategoryDTO().Map<Category, CategoryDTO>(await db.CategoryRepository.GetAsync(id));
+        public async Task<CategoryDTO> GetCategoryByNameAsync(string name)
+        {
+            var categories = await db.CategoryRepository.GetAllAsync();
+            return GetMapperToCategoryDTO().Map<Category, CategoryDTO>(categories.FirstOrDefault(x => x.Name == name));
+        }
         public async Task CreateAsync(CategoryDTO item) => await db.CategoryRepository.CreateAsync(GetMapperToCategory().Map<CategoryDTO, Category>(item));
         public async Task UpdateAsync(CategoryDTO item) => await db.CategoryRepository.UpdateAsync(GetMapperToCategory().Map<CategoryDTO, Category>(item));
         public async Task DeleteAsync(Guid id) => await db.CategoryRepository.DeleteAsync(id);
-
         public void Dispose() => db.Dispose();
     }
 }

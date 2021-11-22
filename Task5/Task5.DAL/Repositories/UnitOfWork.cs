@@ -10,7 +10,6 @@ namespace Task5.DAL.Repositories
 
         public UnitOfWork(DataContext db,
                           IGuestRepository guestRepository,
-                          IUserRepository userRepository,
                           IRoomRepository roomRepository,
                           IStayRepository stayRepository,
                           ICategoryRepository categoryRepository,
@@ -18,7 +17,6 @@ namespace Task5.DAL.Repositories
         {
             this.db = db;
             GuestRepository = guestRepository;
-            UserRepository = userRepository;
             RoomRepository = roomRepository;
             StayRepository = stayRepository;
             CategoryRepository = categoryRepository;
@@ -26,8 +24,6 @@ namespace Task5.DAL.Repositories
         }
 
         public IGuestRepository GuestRepository { get; }
-
-        public IUserRepository UserRepository { get; }
 
         public IRoomRepository RoomRepository { get; }
 

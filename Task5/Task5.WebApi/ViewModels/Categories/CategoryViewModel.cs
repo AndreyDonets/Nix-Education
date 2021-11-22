@@ -1,11 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace Task5.WebApi.ViewModels.Categories
+﻿namespace Task5.WebApi.ViewModels.Categories
 {
-    public class CategoryViewModel : BaseCategoryViewModel
+    public class CategoryViewModel
     {
-        [Required]
-        public Guid Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual decimal Price { get; set; }
     }
 }

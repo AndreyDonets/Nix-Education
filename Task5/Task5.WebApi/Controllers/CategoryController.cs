@@ -15,13 +15,11 @@ namespace Task5.WebApi.Controllers
     [Authorize(Roles = "Moderator,Admin")]
     public class CategoryController : ControllerBase
     {
-        private readonly IRoomService roomService;
         private readonly ICategoryService categoryService;
         private readonly ICategoryDateService categoryDateService;
 
-        public CategoryController(IRoomService roomService, ICategoryService categoryService, ICategoryDateService categoryDateService)
+        public CategoryController(ICategoryService categoryService, ICategoryDateService categoryDateService)
         {
-            this.roomService = roomService;
             this.categoryService = categoryService;
             this.categoryDateService = categoryDateService;
         }
@@ -37,7 +35,6 @@ namespace Task5.WebApi.Controllers
             {
                 response.Add(new CategoryViewModel
                 {
-                    Id = category.Id,
                     Name = category.Name,
                     Price = categoryDate.LastOrDefault(x => x.CategoryId == category.Id).Price
                 });
@@ -46,18 +43,19 @@ namespace Task5.WebApi.Controllers
         }
 
         [HttpGet]
-        public CategoryViewModel Get(Guid id)
+        public CategoryViewModel GetByName(string name)
         {
-            var category = categoryService.Get(id);
-            var price = categoryDateService.GetAll().OrderBy(x => x.StartDate).LastOrDefault(x => x.CategoryId == category.Id && x.StartDate.Date <= DateTime.Now.Date).Price;
+            var category = categoryService.GetCategoryByName(name);
+            var price = categoryDateService.GetCategoryDatesByCategoryId(category.Id)
+                .OrderBy(x => x.StartDate).LastOrDefault(x => x.StartDate.Date <= DateTime.Now.Date).Price;
 
-            return new CategoryViewModel { Id = category.Id, Name = category.Name, Price = price };
+            return new CategoryViewModel { Name = category.Name, Price = price };
         }
 
         [HttpPost]
         public async Task<ActionResult<CategoryViewModel>> Add(CategoryViewModel request)
         {
-            if (categoryService.GetAll().Any(x => x.Name == request.Name))
+            if (categoryService.GetCategoryByName(request.Name) != null)
                 ModelState.AddModelError("Name", $"Category name {request.Name} already exists");
 
             if (request.Price < 0)
@@ -79,20 +77,19 @@ namespace Task5.WebApi.Controllers
 
             var result = new CategoryViewModel()
             {
-                Id = category.Id,
                 Name = category.Name,
                 Price = categoryDate.Price
             };
 
-            return Ok(result);
+            return result;
         }
 
         [HttpPut]
         public async Task<ActionResult<CategoryViewModel>> Edit(ChangeCategoryViewModel request)
         {
-            var category = categoryService.GetAll().FirstOrDefault(x => x.Id == request.Id);
+            var category = categoryService.GetCategoryByName(request.Name);
 
-            if (!categoryService.GetAll().Any(x => x.Name == request.Name))
+            if (category == null)
                 ModelState.AddModelError("Name", $"Category name {request.Name} not found");
 
             if (request.Price < 0)
@@ -104,29 +101,29 @@ namespace Task5.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            if (!string.IsNullOrWhiteSpace(request.Name) && category.Name != request.Name)
+            if (!string.IsNullOrWhiteSpace(request.NewName) && category.Name != request.NewName)
             {
-                category.Name = request.Name;
+                category.Name = request.NewName;
                 await categoryService.UpdateAsync(category);
             }
 
-            var startDate = request.StartDate.HasValue ? request.StartDate.Value : DateTime.Now.Date;
+            var startDate = request.StartDate.HasValue ? request.StartDate.Value.Date : DateTime.Now.Date;
 
-            var cat = categoryDateService.GetAll().FirstOrDefault(x => x.StartDate > startDate);
+            var cat = categoryDateService.GetCategoryDatesByCategoryId(category.Id).FirstOrDefault(x => x.StartDate > startDate);
 
             if (cat != null)
                 await categoryDateService.DeleteAsync(cat.Id);
 
-            var oldCategoryDate = categoryDateService.GetAll().FirstOrDefault(x => x.CategoryId == request.Id && !x.EndDate.HasValue);
+            var oldCategoryDate = categoryDateService.GetCategoryDatesByCategoryId(category.Id)
+                .OrderBy(x => x.StartDate).LastOrDefault(x => x.StartDate < startDate);
 
             var result = new CategoryViewModel()
             {
-                Id = category.Id,
                 Name = category.Name,
                 Price = oldCategoryDate.Price
             };
 
-            if (oldCategoryDate.Price != 0 && oldCategoryDate.Price != request.Price)
+            if (request.Price != 0 && oldCategoryDate.Price != request.Price)
             {
                 result.Price = request.Price;
                 var categoryDate = new CategoryDateDTO()
@@ -143,13 +140,13 @@ namespace Task5.WebApi.Controllers
                 await categoryDateService.CreateAsync(categoryDate);
             }
 
-            return Ok(result);
+            return result;
         }
 
         [HttpDelete]
         public async Task<ActionResult> Delete(string name)
         {
-            var category = categoryService.GetAll().FirstOrDefault(x => x.Name == name);
+            var category = categoryService.GetCategoryByName(name);
 
             if (category == null)
                 return NotFound();

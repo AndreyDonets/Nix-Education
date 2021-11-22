@@ -39,15 +39,13 @@ namespace Task5.WebApi
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IGuestRepository, GuestRepository>();
             services.AddScoped<IStayRepository, StayRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddScoped<ICategoryDateService, CategoryDateService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ICategoryDateService, CategoryDateService>();
             services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IGuestService, GuestService>();
             services.AddScoped<IStayService, StayService>();
-            services.AddScoped<IUserService, UserService>();
 
 
             services.AddAuthentication(auth =>

@@ -14,7 +14,11 @@ namespace Task5.DAL.Repositories
 
         public CategoryDateRepository(DataContext db) => this.db = db;
 
-        public void Create(CategoryDate item) => db.CategoryDates.Add(item);
+        public void Create(CategoryDate item)
+        {
+            if (db.CategoryDates.Find(item.Id) == null && db.Categories.Find(item.CategoryId) != null)
+                db.CategoryDates.Add(item);
+        }
         public CategoryDate Get(Guid id) => db.CategoryDates.Find(id);
         public IEnumerable<CategoryDate> GetAll() => db.CategoryDates.AsNoTracking();
         public void Delete(Guid id)
@@ -23,12 +27,19 @@ namespace Task5.DAL.Repositories
             if (item != null)
                 db.CategoryDates.Remove(item);
         }
-        public void Update(CategoryDate item) => db.CategoryDates.Update(item);
+        public void Update(CategoryDate item)
+        {
+            if (db.CategoryDates.Find(item.Id) != null)
+                db.CategoryDates.Update(item);
+        }
 
         public async Task CreateAsync(CategoryDate item)
         {
-            db.CategoryDates.Add(item);
-            await db.SaveChangesAsync();
+            if (db.CategoryDates.Find(item.Id) == null)
+            {
+                db.CategoryDates.Add(item);
+                await db.SaveChangesAsync();
+            }
         }
         public async Task<CategoryDate> GetAsync(Guid id) => await db.Set<CategoryDate>().FindAsync(id);
         public async Task<IEnumerable<CategoryDate>> GetAllAsync() => await db.Set<CategoryDate>().AsNoTracking().ToListAsync();
@@ -43,8 +54,11 @@ namespace Task5.DAL.Repositories
         }
         public async Task UpdateAsync(CategoryDate item)
         {
-            db.Set<CategoryDate>().Update(item);
-            await db.SaveChangesAsync();
+            if (db.CategoryDates.Find(item.Id) != null)
+            {
+                db.Set<CategoryDate>().Update(item);
+                await db.SaveChangesAsync();
+            }
         }
     }
 }

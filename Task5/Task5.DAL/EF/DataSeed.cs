@@ -102,56 +102,56 @@ namespace Task5.DAL.EF
                     new Stay {
                         RoomId = rooms[0].Id,
                         GuestId = guests[0].Id,
-                        StartDate = new DateTime(2020, 8, 6),
-                        EndDate = new DateTime(2020, 8, 10),
+                        StartDate = DateTime.Now.AddDays(-10).Date,
+                        EndDate = DateTime.Now.AddDays(-6).Date,
                         CheckedIn = true,
                         CheckedOut = true
                     },
                     new Stay {
                         RoomId = rooms[1].Id,
                         GuestId = guests[0].Id,
-                        StartDate = new DateTime(2021, 8, 22),
-                        EndDate = new DateTime(2021, 8, 29),
+                        StartDate = DateTime.Now.AddDays(-8).Date,
+                        EndDate = DateTime.Now.AddDays(-5).Date,
                         CheckedIn = true,
                         CheckedOut = true
                     },
                     new Stay {
                         RoomId = rooms[0].Id,
                         GuestId = guests[1].Id,
-                        StartDate = new DateTime(2021, 8, 15),
-                        EndDate = new DateTime(2021, 8, 18),
+                        StartDate = DateTime.Now.AddDays(-5).Date,
+                        EndDate = DateTime.Now.AddDays(-2).Date,
                         CheckedIn = true,
                         CheckedOut = true
                     },
                     new Stay {
                         RoomId = rooms[1].Id,
                         GuestId = guests[1].Id,
-                        StartDate = new DateTime(2021, 8, 8),
-                        EndDate = new DateTime(2021, 8, 12),
+                        StartDate = DateTime.Now.AddDays(-4).Date,
+                        EndDate = DateTime.Now.AddDays(-3).Date,
                         CheckedIn = true,
                         CheckedOut = true
                     },
                     new Stay {
                         RoomId = rooms[0].Id,
                         GuestId = guests[1].Id,
-                        StartDate = DateTime.Now.Date.AddDays(-1),
-                        EndDate = DateTime.Now.Date.AddDays(3),
+                        StartDate = DateTime.Now.AddDays(-2).Date,
+                        EndDate = DateTime.Now.AddDays(-1).Date,
                         CheckedIn = true,
                         CheckedOut = false
                     },
                     new Stay {
                         RoomId = rooms[1].Id,
                         GuestId = guests[2].Id,
-                        StartDate = DateTime.Now.Date.AddDays(-3),
-                        EndDate = DateTime.Now.Date.AddDays(2),
+                        StartDate = DateTime.Now.AddDays(-3).Date,
+                        EndDate = DateTime.Now.AddDays(-1).Date,
                         CheckedIn = false,
                         CheckedOut = false
                     },
                     new Stay {
                         RoomId = rooms[0].Id,
                         GuestId = guests[2].Id,
-                        StartDate = DateTime.Now.Date.AddDays(5),
-                        EndDate = DateTime.Now.Date.AddDays(9),
+                        StartDate = DateTime.Now.Date,
+                        EndDate = DateTime.Now.AddDays(3).Date,
                         CheckedIn = false,
                         CheckedOut = false
                     }
@@ -170,7 +170,6 @@ namespace Task5.DAL.EF
                 {
                     new IdentityRole{ Name = "Admin" },
                     new IdentityRole{ Name = "Moderator" },
-                    new IdentityRole { Name = "User" }
                 };
 
                 foreach (var role in roles)
@@ -201,8 +200,9 @@ namespace Task5.DAL.EF
                     foreach (var user in users)
                     {
                         userManager.CreateAsync(user, "1Qa2Ws!").Wait();
-                        userManager.AddToRolesAsync(user, roles.Select(x => x.Name)).Wait();
                     }
+                    userManager.AddToRolesAsync(users[0], roles.Select(x => x.Name)).Wait();
+                    userManager.AddToRolesAsync(users[1], new List<string> { "Moderator" });
                     db.SaveChanges();
                 }
             }
