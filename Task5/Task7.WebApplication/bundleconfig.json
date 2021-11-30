@@ -1,0 +1,23 @@
+[
+  {
+    "outputFileName": "wwwroot/css/bundle.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/dist/css/bootstrap.css",
+      "wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css",
+      "wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",
+      "wwwroot/lib/materialize/css/materialize.min.css",
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundle.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/dist/jquery.js",
+      "wwwroot/lib/jquery-validation/dist/jquery.validate.js",
+      "wwwroot/lib/jquery-validation/dist/additional-methods.js",
+      "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
+      "wwwroot/lib/materialize/js/materialize.min.js",
+      "wwwroot/lib/bootstrap/dist/js/bootstrap.js"
+    ]
+  }
+]
