@@ -27,7 +27,17 @@ namespace Task5.BLL.Services
             return GetMapperToGuestDTO().Map<Guest, GuestDTO>(guests.FirstOrDefault(x => x.Passport == passport));
         }
         public void Create(GuestDTO item) => db.GuestRepository.Create(GetMapperToGuest().Map<GuestDTO, Guest>(item));
-        public void Update(GuestDTO item) => db.GuestRepository.Update(GetMapperToGuest().Map<GuestDTO, Guest>(item));
+        public void Update(GuestDTO item)
+        {
+            var guest = db.GuestRepository.Get(item.Id);
+            guest.Passport = item.Passport;
+            guest.Patronymic = item.Patronymic;
+            guest.FirstName = item.FirstName;
+            guest.LastName = item.LastName;
+            guest.BirthDate = item.BirthDate;
+            db.GuestRepository.Update(guest);
+        }
+
         public void Delete(Guid id) => db.GuestRepository.Delete(id);
         public void Save() => db.Save();
         public async Task<IEnumerable<GuestDTO>> GetAllAsync() => GetMapperToGuestDTO().Map<IEnumerable<Guest>, List<GuestDTO>>(await db.GuestRepository.GetAllAsync());
@@ -38,7 +48,17 @@ namespace Task5.BLL.Services
             return GetMapperToGuestDTO().Map<Guest, GuestDTO>(guests.FirstOrDefault(x => x.Passport == passport));
         }
         public async Task CreateAsync(GuestDTO item) => await db.GuestRepository.CreateAsync(GetMapperToGuest().Map<GuestDTO, Guest>(item));
-        public async Task UpdateAsync(GuestDTO item) => await db.GuestRepository.UpdateAsync(GetMapperToGuest().Map<GuestDTO, Guest>(item));
+        public async Task UpdateAsync(GuestDTO item)
+        {
+            var guest = db.GuestRepository.Get(item.Id);
+            guest.Passport = item.Passport;
+            guest.Patronymic = item.Patronymic;
+            guest.FirstName = item.FirstName;
+            guest.LastName = item.LastName;
+            guest.BirthDate = item.BirthDate;
+            await db.GuestRepository.UpdateAsync(guest);
+        }
+
         public async Task DeleteAsync(Guid id) => await db.GuestRepository.DeleteAsync(id);
         public void Dispose() => db.Dispose();
     }

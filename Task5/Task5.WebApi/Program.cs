@@ -4,14 +4,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 using Task5.DAL.EF;
-using Task5.DAL.Entities;
 
 namespace Task5.WebApi
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
 
@@ -22,9 +22,9 @@ namespace Task5.WebApi
                 try
                 {
                     var context = services.GetRequiredService<DataContext>();
-                    var userManager = services.GetRequiredService<UserManager<User>>();
+                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    DataSeed.Seed(context, userManager, roleManager);
+                    await DataSeed.Seed(context, userManager, roleManager);
                 }
                 catch (Exception ex)
                 {
@@ -32,8 +32,6 @@ namespace Task5.WebApi
                     logger.LogError(ex, "An error occurred seeding the DB.");
                 }
             }
-            host.Run();
-
             host.Run();
         }
 

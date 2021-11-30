@@ -21,7 +21,7 @@ namespace Task5.DAL.Repositories
                 db.Categories.Add(item);
         }
         public Category Get(Guid id) => db.Categories.Find(id);
-        public IEnumerable<Category> GetAll() => db.Categories.AsNoTracking();
+        public IEnumerable<Category> GetAll() => db.Categories;
         public void Delete(Guid id)
         {
             var item = db.Categories.Find(id);
@@ -43,7 +43,7 @@ namespace Task5.DAL.Repositories
             }
         }
         public async Task<Category> GetAsync(Guid id) => await db.Set<Category>().FindAsync(id);
-        public async Task<IEnumerable<Category>> GetAllAsync() => await db.Set<Category>().AsNoTracking().ToListAsync();
+        public async Task<IEnumerable<Category>> GetAllAsync() => await db.Set<Category>().ToListAsync();
         public async Task DeleteAsync(Guid id)
         {
             var item = db.Categories.Find(id);

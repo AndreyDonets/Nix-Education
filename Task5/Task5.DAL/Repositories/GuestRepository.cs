@@ -21,8 +21,8 @@ namespace Task5.DAL.Repositories
                 db.Guests.Add(item);
         }
         public Guest Get(Guid id) => db.Guests.Find(id);
-        public Guest GetByPassport(string passport) => db.Guests.AsNoTracking().FirstOrDefault(x => x.Passport == passport);
-        public IEnumerable<Guest> GetAll() => db.Guests.AsNoTracking();
+        public Guest GetByPassport(string passport) => db.Guests.FirstOrDefault(x => x.Passport == passport);
+        public IEnumerable<Guest> GetAll() => db.Guests;
         public void Delete(Guid id)
         {
             var item = db.Guests.Find(id);
@@ -44,8 +44,8 @@ namespace Task5.DAL.Repositories
             }
         }
         public async Task<Guest> GetAsync(Guid id) => await db.Set<Guest>().FindAsync(id);
-        public async Task<Guest> GetByPassportAsync(string passport) => await db.Guests.AsNoTracking().FirstOrDefaultAsync(x => x.Passport == passport);
-        public async Task<IEnumerable<Guest>> GetAllAsync() => await db.Set<Guest>().AsNoTracking().ToListAsync();
+        public async Task<Guest> GetByPassportAsync(string passport) => await db.Guests.FirstOrDefaultAsync(x => x.Passport == passport);
+        public async Task<IEnumerable<Guest>> GetAllAsync() => await db.Set<Guest>().ToListAsync();
         public async Task DeleteAsync(Guid id)
         {
             var item = db.Guests.Find(id);

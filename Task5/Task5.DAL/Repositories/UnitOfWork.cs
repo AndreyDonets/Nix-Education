@@ -6,14 +6,15 @@ namespace Task5.DAL.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private DataContext db;
+
         private bool disposed = false;
 
         public UnitOfWork(DataContext db,
-                          IGuestRepository guestRepository,
-                          IRoomRepository roomRepository,
-                          IStayRepository stayRepository,
-                          ICategoryRepository categoryRepository,
-                          ICategoryDateRepository categoryDateRepository)
+            IGuestRepository guestRepository,
+            IRoomRepository roomRepository,
+            IStayRepository stayRepository,
+            ICategoryRepository categoryRepository,
+            ICategoryDateRepository categoryDateRepository)
         {
             this.db = db;
             GuestRepository = guestRepository;
@@ -24,13 +25,9 @@ namespace Task5.DAL.Repositories
         }
 
         public IGuestRepository GuestRepository { get; }
-
         public IRoomRepository RoomRepository { get; }
-
         public IStayRepository StayRepository { get; }
-
         public ICategoryRepository CategoryRepository { get; }
-
         public ICategoryDateRepository CategoryDateRepository { get; }
 
         public void Dispose()

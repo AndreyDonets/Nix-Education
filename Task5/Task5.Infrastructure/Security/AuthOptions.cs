@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Task5.WebApi.Security
+namespace Task5.Infrastructure.Security
 {
     public class AuthOptions
     {
@@ -9,9 +9,6 @@ namespace Task5.WebApi.Security
         public const string AUDIENCE = "MyAuthClient";
         const string KEY = "mysupersecret_secretkey!123"; 
         public const int LIFETIME = 15;
-        internal static SymmetricSecurityKey GetSymmetricSecurityKey()
-        {
-            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));
-        }
+        public static SymmetricSecurityKey GetSymmetricSecurityKey() => new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));
     }
 }

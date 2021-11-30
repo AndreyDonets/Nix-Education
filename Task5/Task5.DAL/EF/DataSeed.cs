@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Task5.DAL.Entities;
 
 namespace Task5.DAL.EF
 {
     public class DataSeed
     {
-        public static void Seed(DataContext db, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task Seed(DataContext db, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             if (!db.Categories.Any())
             {
@@ -141,7 +142,7 @@ namespace Task5.DAL.EF
                     },
                     new Stay {
                         RoomId = rooms[1].Id,
-                        GuestId = guests[2].Id,
+                        GuestId = guests[0].Id,
                         StartDate = DateTime.Now.AddDays(-3).Date,
                         EndDate = DateTime.Now.AddDays(-1).Date,
                         CheckedIn = false,
@@ -149,7 +150,7 @@ namespace Task5.DAL.EF
                     },
                     new Stay {
                         RoomId = rooms[0].Id,
-                        GuestId = guests[2].Id,
+                        GuestId = guests[1].Id,
                         StartDate = DateTime.Now.Date,
                         EndDate = DateTime.Now.AddDays(3).Date,
                         CheckedIn = false,
@@ -174,35 +175,32 @@ namespace Task5.DAL.EF
 
                 foreach (var role in roles)
                 {
-                    roleManager.CreateAsync(role).Wait();
+                    await roleManager.CreateAsync(role);
                 }
 
                 if (!userManager.Users.Any())
                 {
-
-
-
-                    var users = new List<User>
+                    var users = new List<IdentityUser>
                                 {
-                                    new User
+                                    new IdentityUser
                                     {
                                         UserName = "Admin",
                                         Email = "admin@test.com"
                                     },
-                                    new User
+                                    new IdentityUser
                                     {
                                         UserName = "Moderator",
                                         Email = "moderator@test.com"
                                     }
                                 };
 
-
                     foreach (var user in users)
                     {
-                        userManager.CreateAsync(user, "1Qa2Ws!").Wait();
+                        await userManager.CreateAsync(user, "1Qa2Ws!");
                     }
-                    userManager.AddToRolesAsync(users[0], roles.Select(x => x.Name)).Wait();
-                    userManager.AddToRolesAsync(users[1], new List<string> { "Moderator" });
+                    await userManager.AddToRoleAsync(users[0], roles[0].Name);
+                    await userManager.AddToRoleAsync(users[1], roles[1].Name);
+
                     db.SaveChanges();
                 }
             }

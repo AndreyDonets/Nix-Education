@@ -35,7 +35,7 @@ namespace Task5.WebApi.Controllers
         }
 
         [HttpGet]
-        public List<RoomViewModel> Get()
+        public List<RoomViewModel> RoomList()
         {
             var response = new List<RoomViewModel>();
 
@@ -58,9 +58,9 @@ namespace Task5.WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<RoomViewModel>> GetFreeRooms(DateTime date)
+        public ActionResult<List<RoomViewModel>> FreeRooms(DateTime startDate, DateTime endDate)
         {
-            if (date.Date <= DateTime.Now.Date)
+            if (startDate.Date <= DateTime.Now.Date && endDate.Date < startDate.Date)
                 return BadRequest();
 
             var response = new List<RoomViewModel>();
@@ -69,9 +69,9 @@ namespace Task5.WebApi.Controllers
 
             var categories = categoryService.GetAll();
 
-            var occupiedRoomsId = stayService.GetAll().Where(x => date.Date >= x.StartDate.Date && date.Date <= x.EndDate.Date).Select(x => x.RoomId);
+            var occupiedRoomsId = stayService.GetAll().Where(x => endDate.Date < x.StartDate && x.EndDate >= startDate.Date).Select(x => x.RoomId);
 
-            var categoryDates = categoryDateService.GetAll().Where(x => x.StartDate.Date <= date.Date && (!x.EndDate.HasValue || x.EndDate.Value.Date > date.Date));
+            var categoryDates = categoryDateService.GetAll().Where(x => x.StartDate.Date <= startDate.Date && (!x.EndDate.HasValue || x.EndDate.Value.Date > startDate.Date)).OrderBy(x => x.StartDate);
 
             var freeRooms = rooms.Where(x => !occupiedRoomsId.Any(y => y == x.Id));
 

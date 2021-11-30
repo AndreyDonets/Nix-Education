@@ -21,7 +21,7 @@ namespace Task5.DAL.Repositories
         }
 
         public Stay Get(Guid id) => db.Stays.Find(id);
-        public IEnumerable<Stay> GetAll() => db.Stays.AsNoTracking();
+        public IEnumerable<Stay> GetAll() => db.Stays;
         public void Delete(Guid id)
         {
             var item = db.Stays.Find(id);
@@ -43,7 +43,7 @@ namespace Task5.DAL.Repositories
             }
         }
         public async Task<Stay> GetAsync(Guid id) => await db.Set<Stay>().FindAsync(id);
-        public async Task<IEnumerable<Stay>> GetAllAsync() => await db.Set<Stay>().AsNoTracking().ToListAsync();
+        public async Task<IEnumerable<Stay>> GetAllAsync() => await db.Set<Stay>().ToListAsync();
         public async Task DeleteAsync(Guid id)
         {
             var item = db.Stays.Find(id);

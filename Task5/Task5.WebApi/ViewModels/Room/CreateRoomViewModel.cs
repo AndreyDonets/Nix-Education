@@ -2,10 +2,11 @@
 
 namespace Task5.WebApi.ViewModels.Room
 {
-    public class AddRoomViewModel : BaseRoomViewModel
+    public class CreateRoomViewModel : BaseRoomViewModel
     {
-        [Required]
-        [MaxLength(100)]
+
+        [Required(ErrorMessage = "Required field")]
+        [MaxLength(50)]
         public string Category { get; set; }
     }
 }

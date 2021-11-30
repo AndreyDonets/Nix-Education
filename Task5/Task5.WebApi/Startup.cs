@@ -13,8 +13,8 @@ using Task5.DAL.EF;
 using Task5.DAL.Entities;
 using Task5.DAL.Interfaces;
 using Task5.DAL.Repositories;
-using Task5.WebApi.Interfaces;
-using Task5.WebApi.Security;
+using Task5.Infrastructure.Interfaces;
+using Task5.Infrastructure.Security;
 
 namespace Task5.WebApi
 {
@@ -32,7 +32,7 @@ namespace Task5.WebApi
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Task5")));
 
-            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<DataContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<DataContext>();
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryDateRepository, CategoryDateRepository>();

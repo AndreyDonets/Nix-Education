@@ -45,7 +45,14 @@ namespace Task5.BLL.Services
             return GetMapperToRoomDTO().Map<IEnumerable<Room>, List<RoomDTO>>(rooms.Where(x => x.CategoryId == category.Id));
         }
         public void Create(RoomDTO item) => db.RoomRepository.Create(GetMapperToRoom().Map<RoomDTO, Room>(item));
-        public void Update(RoomDTO item) => db.RoomRepository.Update(GetMapperToRoom().Map<RoomDTO, Room>(item));
+        public void Update(RoomDTO item)
+        {
+            var room = db.RoomRepository.Get(item.Id);
+            room.Number = item.Number;
+            room.CategoryId = item.CategoryId;
+            db.RoomRepository.Update(room);
+        }
+
         public void Delete(Guid id) => db.RoomRepository.Delete(id);
         public void Save() => db.Save();
         public async Task<IEnumerable<RoomDTO>> GetAllAsync() => GetMapperToRoomDTO().Map<IEnumerable<Room>, List<RoomDTO>>(await db.RoomRepository.GetAllAsync());
@@ -69,7 +76,14 @@ namespace Task5.BLL.Services
             return GetMapperToRoomDTO().Map<IEnumerable<Room>, List<RoomDTO>>(rooms.Where(x => x.CategoryId == category.Id));
         }
         public async Task CreateAsync(RoomDTO item) => await db.RoomRepository.CreateAsync(GetMapperToRoom().Map<RoomDTO, Room>(item));
-        public async Task UpdateAsync(RoomDTO item) => await db.RoomRepository.UpdateAsync(GetMapperToRoom().Map<RoomDTO, Room>(item));
+        public async Task UpdateAsync(RoomDTO item)
+        {
+            var room = db.RoomRepository.Get(item.Id);
+            room.Number = item.Number;
+            room.CategoryId = item.CategoryId;
+            await db.RoomRepository.UpdateAsync(room);
+        }
+
         public async Task DeleteAsync(Guid id) => await db.RoomRepository.DeleteAsync(id);
         public void Dispose() => db.Dispose();
     }

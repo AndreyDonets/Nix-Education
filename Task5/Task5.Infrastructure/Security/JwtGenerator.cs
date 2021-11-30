@@ -5,19 +5,18 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Task5.DAL.Entities;
-using Task5.WebApi.Interfaces;
+using Task5.Infrastructure.Interfaces;
 
-namespace Task5.WebApi.Security
+namespace Task5.Infrastructure.Security
 {
     public class JwtGenerator : IJwtGenerator
     {
-        private readonly UserManager<User> userManager;
-        public JwtGenerator(UserManager<User> userManager)
+        private readonly UserManager<IdentityUser> userManager;
+        public JwtGenerator(UserManager<IdentityUser> userManager)
         {
             this.userManager = userManager;
         }
-        public async Task<string> CreateToken(User user)
+        public async Task<string> CreateToken(IdentityUser user)
         {
             if (user != null)
             {
@@ -39,7 +38,7 @@ namespace Task5.WebApi.Security
             return "";
         }
 
-        private async Task<List<Claim>> GetIdentity(User user)
+        private async Task<List<Claim>> GetIdentity(IdentityUser user)
         {
             var claims = new List<Claim>
             {

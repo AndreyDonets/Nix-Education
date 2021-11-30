@@ -27,7 +27,13 @@ namespace Task5.BLL.Services
             return GetMapperToCategoryDTO().Map<Category, CategoryDTO>(categories.FirstOrDefault(x => x.Name == name));
         }
         public void Create(CategoryDTO item) => db.CategoryRepository.Create(GetMapperToCategory().Map<CategoryDTO, Category>(item));
-        public void Update(CategoryDTO item) => db.CategoryRepository.Update(GetMapperToCategory().Map<CategoryDTO, Category>(item));
+        public void Update(CategoryDTO item)
+        {
+            var category = db.CategoryRepository.Get(item.Id);
+            category.Name = item.Name;
+            db.CategoryRepository.Update(category);
+        }
+
         public void Delete(Guid id) => db.CategoryRepository.Delete(id);
         public void Save() => db.Save();
         public async Task<IEnumerable<CategoryDTO>> GetAllAsync() => GetMapperToCategoryDTO().Map<IEnumerable<Category>, List<CategoryDTO>>(await db.CategoryRepository.GetAllAsync());
@@ -38,7 +44,13 @@ namespace Task5.BLL.Services
             return GetMapperToCategoryDTO().Map<Category, CategoryDTO>(categories.FirstOrDefault(x => x.Name == name));
         }
         public async Task CreateAsync(CategoryDTO item) => await db.CategoryRepository.CreateAsync(GetMapperToCategory().Map<CategoryDTO, Category>(item));
-        public async Task UpdateAsync(CategoryDTO item) => await db.CategoryRepository.UpdateAsync(GetMapperToCategory().Map<CategoryDTO, Category>(item));
+        public async Task UpdateAsync(CategoryDTO item)
+        {
+            var category = db.CategoryRepository.Get(item.Id);
+            category.Name = item.Name;
+            await db.CategoryRepository.UpdateAsync(category);
+        }
+
         public async Task DeleteAsync(Guid id) => await db.CategoryRepository.DeleteAsync(id);
         public void Dispose() => db.Dispose();
     }

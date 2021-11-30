@@ -20,7 +20,7 @@ namespace Task5.DAL.Repositories
                 db.Rooms.Add(item);
         }
         public Room Get(Guid id) => db.Rooms.Find(id);
-        public IEnumerable<Room> GetAll() => db.Rooms.AsNoTracking();
+        public IEnumerable<Room> GetAll() => db.Rooms;
         public void Delete(Guid id)
         {
             var item = db.Rooms.Find(id);
@@ -42,7 +42,7 @@ namespace Task5.DAL.Repositories
             }
         }
         public async Task<Room> GetAsync(Guid id) => await db.Set<Room>().FindAsync(id);
-        public async Task<IEnumerable<Room>> GetAllAsync() => await db.Set<Room>().AsNoTracking().ToListAsync();
+        public async Task<IEnumerable<Room>> GetAllAsync() => await db.Set<Room>().ToListAsync();
         public async Task DeleteAsync(Guid id)
         {
             var item = db.Rooms.Find(id);

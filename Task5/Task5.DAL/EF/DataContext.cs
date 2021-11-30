@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Task5.DAL.Entities;
 
 namespace Task5.DAL.EF
 {
-    public class DataContext : IdentityDbContext<User>
+    public class DataContext : IdentityDbContext<IdentityUser>
     {
         public DataContext(DbContextOptions<DataContext> options)
-            : base(options) 
-            {
-                Database.EnsureCreated();
-            }
+            : base(options)
+        {
+            Database.EnsureCreated();
+        }
 
         public DbSet<Guest> Guests { get; set; }
         public DbSet<Room> Rooms { get; set; }

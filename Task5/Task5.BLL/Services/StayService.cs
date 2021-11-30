@@ -55,7 +55,18 @@ namespace Task5.BLL.Services
             return GetMapperToStayDTO().Map<IEnumerable<Stay>, List<StayDTO>>(stays.Where(x => x.RoomId == guest.Id));
         }
         public void Create(StayDTO item) => db.StayRepository.Create(GetMapperToStay().Map<StayDTO, Stay>(item));
-        public void Update(StayDTO item) => db.StayRepository.Update(GetMapperToStay().Map<StayDTO, Stay>(item));
+        public void Update(StayDTO item)
+        {
+            var stay = db.StayRepository.Get(item.Id);
+            stay.GuestId = item.GuestId;
+            stay.CheckedIn = item.CheckedIn;
+            stay.CheckedOut = item.CheckedOut;
+            stay.EndDate = item.EndDate;
+            stay.StartDate = item.StartDate;
+            stay.RoomId = item.RoomId;
+            db.StayRepository.Update(stay);
+        }
+
         public void Delete(Guid id) => db.StayRepository.Delete(id);
         public void Save() => db.Save();
         public async Task<IEnumerable<StayDTO>> GetAllAsync() => GetMapperToStayDTO().Map<IEnumerable<Stay>, List<StayDTO>>(await db.StayRepository.GetAllAsync());
@@ -87,7 +98,18 @@ namespace Task5.BLL.Services
             return GetMapperToStayDTO().Map<IEnumerable<Stay>, List<StayDTO>>(stays.Where(x => x.RoomId == guest.Id));
         }
         public async Task CreateAsync(StayDTO item) => await db.StayRepository.CreateAsync(GetMapperToStay().Map<StayDTO, Stay>(item));
-        public async Task UpdateAsync(StayDTO item) => await db.StayRepository.UpdateAsync(GetMapperToStay().Map<StayDTO, Stay>(item));
+        public async Task UpdateAsync(StayDTO item)
+        {
+            var stay = db.StayRepository.Get(item.Id);
+            stay.GuestId = item.GuestId;
+            stay.CheckedIn = item.CheckedIn;
+            stay.CheckedOut = item.CheckedOut;
+            stay.EndDate = item.EndDate;
+            stay.StartDate = item.StartDate;
+            stay.RoomId = item.RoomId;
+            await db.StayRepository.UpdateAsync(stay);
+        }
+
         public async Task DeleteAsync(Guid id) => await db.StayRepository.DeleteAsync(id);
         public void Dispose() => db.Dispose();
     }

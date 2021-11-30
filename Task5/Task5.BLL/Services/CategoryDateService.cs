@@ -46,8 +46,12 @@ namespace Task5.BLL.Services
         }
         public void Update(CategoryDateDTO item)
         {
-            if (db.CategoryDateRepository.Get(item.Id) != null && db.CategoryRepository.Get(item.CategoryId) != null)
-                db.CategoryDateRepository.Update(GetMapperToCategoryDate().Map<CategoryDateDTO, CategoryDate>(item));
+            var categoryDate = db.CategoryDateRepository.Get(item.Id);
+            if (categoryDate != null && db.CategoryRepository.Get(item.CategoryId) != null)
+            {
+                categoryDate.EndDate = item.EndDate;
+                db.CategoryDateRepository.Update(categoryDate);
+            }
         }
         public void Delete(Guid id)
         {
@@ -77,8 +81,12 @@ namespace Task5.BLL.Services
         }
         public async Task UpdateAsync(CategoryDateDTO item)
         {
-            if (db.CategoryDateRepository.Get(item.Id) != null && db.CategoryRepository.Get(item.CategoryId) != null)
-                await db.CategoryDateRepository.UpdateAsync(GetMapperToCategoryDate().Map<CategoryDateDTO, CategoryDate>(item));
+            var categoryDate = db.CategoryDateRepository.Get(item.Id);
+            if (categoryDate != null && db.CategoryRepository.Get(item.CategoryId) != null)
+            {
+                categoryDate.EndDate = item.EndDate;
+                await db.CategoryDateRepository.UpdateAsync(categoryDate);
+            }
         }
         public async Task DeleteAsync(Guid id)
         {
