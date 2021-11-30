@@ -1,0 +1,70 @@
+﻿@model IEnumerable<StayViewModel>
+
+<div class="right">
+    <form asp-controller="Manage" asp-action="Bookings" method="get">
+        <label class="control-label">Date</label>
+        <input type="Date" value="@ViewBag.Date" name="date" />
+        <input type="submit" value="Search book" class="btn btn-primary" />
+    </form>
+</div>
+<h4>Bookings</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Passport
+            </th>
+            <th>
+                Number
+            </th>
+            <th>
+                Start Date
+            </th>
+            <th>
+                EndD ate
+            </th>
+            <th>
+                Checked In
+            </th>
+            <th>
+                Checked Out
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Passport
+                </td>
+                <td>
+                    @item.RoomNumber
+                </td>
+                <td>
+                    @item.StartDate.ToString("dd.MM.yyyy")
+                </td>
+                <td>
+                    @item.EndDate.ToString("dd.MM.yyyy")
+                </td>
+                <td>
+                    @item.CheckedIn
+                    @if (item.StartDate.Date <= DateTime.Now.Date && !item.CheckedIn)
+                    {
+                        <span>|</span>
+                        <a asp-controller="Manage" asp-action="CheckIn" asp-route-number="@item.RoomNumber">Check in</a>
+                    }
+                </td>
+                <td>
+                    @item.CheckedOut
+                    @if (item.CheckedIn && !item.CheckedOut)
+                    {
+                        <span>|</span>
+                        <a asp-controller="Manage" asp-action="CheckOut" asp-route-number="@item.RoomNumber">Check out</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

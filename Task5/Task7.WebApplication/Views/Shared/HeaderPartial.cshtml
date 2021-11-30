@@ -1,0 +1,27 @@
+﻿<header>
+    <nav class="nav-extended cyan">
+        <div class="nav-wrapper container">
+            <a class="brand-logo" asp-controller="Room" asp-action="Rooms">Youtel</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a asp-controller="Room" asp-action="GetAll">Rooms</a></li>
+                <li><a asp-controller="Room" asp-action="GetAll" asp-route-date="@DateTime.Now.ToString("yyyy-MM-dd")">Search room</a></li>
+                <li><a asp-controller="Room" asp-action="Book" asp-route-number="1">Book room</a></li>
+            </ul>
+        </div>
+        @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
+        {
+            <div class="nav-content container">
+                <ul class="tabs tabs-transparent">
+                    <li class="tab"><a asp-controller="Category" asp-action="GetAll">Category</a></li>
+                    <li class="tab"><a asp-controller="RoomManage" asp-action="GetAll">Room</a></li>
+                    <li class="tab"><a asp-controller="Manage" asp-action="Bookings">Manage</a></li>
+                    <li class="tab"><a asp-controller="Manage" asp-action="Profit">Profit</a></li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="tab"><a asp-controller="Account" asp-action="Users">User</a></li>
+                    }
+                </ul>
+            </div>
+        }
+    </nav>
+</header>

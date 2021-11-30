@@ -1,0 +1,58 @@
+﻿@model IEnumerable<RoomViewModel>
+
+
+<div class="right">
+    <form asp-controller="Room" asp-action="GetAll" method="get">
+        <div class="row">
+            <div class="col-6">
+                <label class="control-label">Start date</label>
+                <input type="Date" class="form-control form-control-sm" value="@ViewBag.StartDate" name="startDate" />
+            </div>
+            <div class="col-6">
+                <label class="control-label">End date</label>
+                <input type="Date" class="form-control form-control-sm" value="@ViewBag.EndDate" name="endDate" />
+            </div>
+            <div class="d-flex flex-row-reverse">
+                <input type="submit" value="Search free rooms" class="btn btn-primary" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<h4>Rooms</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Number
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Price
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Number
+                </td>
+                <td>
+                    @item.Category
+                </td>
+                <td>
+                    @item.Price
+                </td>
+                <td>
+                    <a asp-controller="Room" asp-action="Book" asp-route-number="@item.Number" asp-route-startDate="@ViewBag.StartDate" asp-route-endDate="@ViewBag.EndDate">Book</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

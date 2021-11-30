@@ -1,0 +1,45 @@
+﻿@model IEnumerable<CategoryViewModel>
+
+<div class="right">
+    <form asp-controller="Category" asp-action="GetAll" method="get">
+        <label class="control-label">Name</label>
+        <input type="text" name="name" />
+        <input type="submit" value="Search category" class="btn btn-primary" />
+    </form>
+</div>
+<h4>Categories</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Price
+                </td>
+                <td>
+                    <a asp-controller="Category" asp-action="Edit" asp-route-name="@item.Name">Edit</a> |
+                    <a asp-controller="Category" asp-action="Delete" asp-route-name="@item.Name">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-controller="Category" asp-action="Create">Create new category</a>
+</div>

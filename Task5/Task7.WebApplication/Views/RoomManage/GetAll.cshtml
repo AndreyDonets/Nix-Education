@@ -1,0 +1,51 @@
+﻿@model IEnumerable<RoomViewModel>
+
+<div class="right">
+    <form asp-controller="RoomManage" asp-action="GetAll" method="get">
+        <label class="control-label">Number</label>
+        <input type="number" name="number" />
+        <input type="submit" value="Search room" class="btn btn-primary" />
+    </form>
+</div>
+<h4>Rooms</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Number
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Price
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @item.Number
+            </td>
+            <td>
+                @item.Category
+            </td>
+            <td>
+                @item.Price
+            </td>
+            <td>
+                <a asp-controller="RoomManage" asp-action="Edit" asp-route-number="@item.Number">Edit</a> |
+                <a asp-controller="RoomManage" asp-action="Delete" asp-route-number="@item.Number">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-controller="RoomManage" asp-action="Create">Create new room</a>
+</div>

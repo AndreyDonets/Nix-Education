@@ -1,0 +1,33 @@
+﻿@model ChangeRoomViewModel
+
+
+<h4>Edit room @Model.Number</h4>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="RoomManage" asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="Number" type="hidden" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="NewNumber" class="control-label"></label>
+                <input asp-for="NewNumber" class="form-control" />
+                <span asp-validation-for="NewNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="NewCategory" class="control-label"></label>
+                <select asp-for="NewCategory" class="form-select" asp-items="@ViewBag.Categories" ></select>
+                <span asp-validation-for="NewCategory" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="RoomManage" asp-action="GetAll">Back to rooms</a>
+</div>
